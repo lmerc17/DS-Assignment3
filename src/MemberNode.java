@@ -55,17 +55,19 @@ public class MemberNode {
 
             if(isProposer){
                 // proposal request is in the format of <type of message>:<sender>:<recipient>:<current proposal number>
-                request = "proposal:" + memberID + ":broadcast:" + proposalNumber;
+                request = "proposal:N" + memberID + ":broadcast:" + proposalNumber;
                 proposalNumber++;
                 out.println(request);
             }
             else{
+                System.out.println("waiting for message...");
                 response = in.readLine(); // wait for response
+                System.out.println(response);
                 recipient = Integer.parseInt(response.split(":")[1]);
                 if(proposalNumber < Integer.parseInt(response.split(":")[3])){
                     // if proposal number received is greater than most recently accepted proposal, send back a promise message
                     // promise is of format <type of message>:<sender>:<recipient>:<previous proposal number>:<previous proposal value>
-                    request = "promise:" + memberID + ":" + recipient + ":" + previous_proposal_number + ":" + previous_proposal_value;
+                    request = "promise:N" + memberID + ":" + recipient + ":" + previous_proposal_number + ":" + previous_proposal_value;
                 }
                 else{
                     request = "promiseNack";
@@ -79,7 +81,7 @@ public class MemberNode {
             System.err.println("Unknown host: " + hostName);
         }
         catch(IOException e){ //Exception catching for IOException
-            System.err.println("Couldn't get IO for connection to " + hostName);
+            System.err.println("Couldn't get or lost connection to " + hostName);
         }
 
 

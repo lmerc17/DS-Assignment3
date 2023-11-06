@@ -75,39 +75,34 @@ public class CentralCommunicationController {
             int currentNode = 0;
             int recipient;
 
-            label:
             while(true){
                 if((line = memberIns[currentNode].readLine()) != null) {
 
+                    messageRecipient = line.split(":")[2];
+                    if (messageRecipient.equals("broadcast")) {
+                        System.out.println("Broadcasting the following: " + line);
+                        for (int i = 0; i < number_of_nodes; i++){
+                            System.out.println("current node: " + currentNode);
+                            if(i!=currentNode){
+                                System.out.println("broadcasting to node " + i);
+                                memberOuts[i].println(line);
+                                memberOuts[i].flush();
+                            }
+                        }
+                    }
+                    else if(messageRecipient.contains("N")){
+                        recipient = Integer.parseInt(messageRecipient.substring(1)) - 1;
+                        memberOuts[recipient].println(line);
+                        memberOuts[recipient].flush();
+                    }
+                    else{
+                        System.err.println("Invalid message recipient received, message could not be passed on");
+                        return;
+                    }
+
                     messageType = line.split(":")[0];
-
-                    switch(messageType){
-                        case "proposal":
-                            messageRecipient = line.split(":")[2];
-                            if (messageRecipient.equals("broadcast")) {
-                                System.out.println("Broadcasting the following: " + line);
-                                for (int i = 0; i < number_of_nodes; i++){
-                                    System.out.println("current node: " + currentNode);
-                                    if(i!=currentNode){
-                                        System.out.println("broadcasting to node " + i);
-                                        memberOuts[i].println(line);
-                                        memberOuts[i].flush();
-                                    }
-                                }
-                            }
-                            else if(messageRecipient.contains("N")){
-                                recipient = Integer.parseInt(messageRecipient.substring(1)) - 1;
-                                memberOuts[recipient].println(line);
-                            }
-                            else{
-                                System.err.println("Invalid message recipient received, message could not be passed on");
-                                return;
-                            }
-                            break;
-
-                        case "promise":
-
-                            break label;
+                    if(messageType.equals("decide")){ // if a decide message has been broadcast out, the vote has been settled
+                        break;
                     }
 
                 }

@@ -54,9 +54,11 @@ public class CentralCommunicationController {
 
     public static void main(String[] args){
 
+        // initialise port number for server and number of nodes to connect
         int port = 4567;
         int number_of_nodes = 9;
 
+        // try and catch statement to ensure sockets act accordingly
         try{
             // initialisation of all required sockets, inputs and output streams
             ServerSocket serverSocket = new ServerSocket(port);
@@ -69,39 +71,38 @@ public class CentralCommunicationController {
                 return;
             }
 
+            // initialisation of used variables for sending messages
             String line;
             String messageRecipient;
             String messageType;
             int currentNode = 0;
             int recipient;
 
+            // infinite while loop
             while(true){
-                if((line = memberIns[currentNode].readLine()) != null) {
+                if((line = memberIns[currentNode].readLine()) != null) { // if a message has been received for the current node
 
-                    messageRecipient = line.split(":")[2];
-                    if (messageRecipient.equals("broadcast")) {
-                        System.out.println("Broadcasting the following: " + line);
-                        for (int i = 0; i < number_of_nodes; i++){
-                            System.out.println("current node: " + currentNode);
+                    messageRecipient = line.split(":")[2]; // save the ID for the message recipient
+                    if (messageRecipient.equals("broadcast")) { // if the ID is broadcast
+                        for (int i = 0; i < number_of_nodes; i++){ // for all the nodes except the current one
                             if(i!=currentNode){
-                                System.out.println("broadcasting to node " + i);
-                                memberOuts[i].println(line);
-                                memberOuts[i].flush();
+                                memberOuts[i].println(line); // send data
+                                memberOuts[i].flush(); // ensure data is sent immediately
                             }
                         }
                     }
-                    else if(messageRecipient.contains("N")){
-                        recipient = Integer.parseInt(messageRecipient.substring(1)) - 1;
-                        memberOuts[recipient].println(line);
-                        memberOuts[recipient].flush();
+                    else if(messageRecipient.contains("N")){ // if the ID is specific to a node
+                        recipient = Integer.parseInt(messageRecipient.substring(1)) - 1; // determine which node
+                        memberOuts[recipient].println(line); // send the message to the node
+                        memberOuts[recipient].flush(); // ensure data is sent immediately
                     }
-                    else{
+                    else{ // if none of the conditions are satisfied, an invalid message has been sent
                         System.err.println("Invalid message recipient received, message could not be passed on");
                         return;
                     }
 
-                    messageType = line.split(":")[0];
-                    if(messageType.equals("decide")){ // if a decide message has been broadcast out, the vote has been settled
+                    messageType = line.split(":")[0]; // once all messages have been sent, determine the type of message sent off
+                    if(messageType.equals("decide")){ // if a decide message has been broadcast out, the vote has been settled, therefore no further communication required
                         break;
                     }
 
@@ -114,9 +115,17 @@ public class CentralCommunicationController {
                 return;
             }
 
-        } catch (IOException e) {
+        }
+        catch(IOException e){
             System.err.println("Exception caught when trying to create or communicate to sockets");
         }
+        catch(NumberFormatException e){
+            System.err.println("A non-number string has been attempted to be converted into a number");
+        }
+        catch(ArrayIndexOutOfBoundsException e){
+            System.err.println("Access at and out of bounds index for an array has been attempted");
+        }
+
 
     }
 

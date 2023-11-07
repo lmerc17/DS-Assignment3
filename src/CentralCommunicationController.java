@@ -78,7 +78,7 @@ public class CentralCommunicationController {
             int currentNode = 0;
             int recipient;
 
-            // infinite while loop
+            // infinite while loop, it will cycle through the nodes checking if a message has been received from them
             while(true){
                 if((line = memberIns[currentNode].readLine()) != null) { // if a message has been received for the current node
 

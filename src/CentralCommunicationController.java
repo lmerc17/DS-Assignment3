@@ -56,7 +56,7 @@ public class CentralCommunicationController {
 
         // initialise port number for server and number of nodes to connect
         int port = 4567;
-        int number_of_nodes = 9;
+        int number_of_nodes = 3;
 
         // try and catch statement to ensure sockets act accordingly
         try{
@@ -81,12 +81,14 @@ public class CentralCommunicationController {
             // infinite while loop, it will cycle through the nodes checking if a message has been received from them
             while(true){
                 if((line = memberIns[currentNode].readLine()) != null) { // if a message has been received for the current node
+                    System.out.println("Message Received: " + line);
 
                     messageRecipient = line.split(":")[2]; // save the ID for the message recipient
                     if (messageRecipient.equals("broadcast")) { // if the ID is broadcast
                         for (int i = 0; i < number_of_nodes; i++){ // for all the nodes except the current one
                             if(i!=currentNode){
                                 memberOuts[i].println(line); // send data
+                                System.out.println("Outgoing Message to Node " + i + ": " + line);
                                 // memberOuts[i].flush(); // ensure data is sent immediately
                             }
                         }
@@ -94,6 +96,7 @@ public class CentralCommunicationController {
                     else if(messageRecipient.contains("N")){ // if the ID is specific to a node, determine which node
                         recipient = Integer.parseInt(messageRecipient.substring(1)) - 1;
                         memberOuts[recipient].println(line); // send the message to the node
+                        System.out.println("Outgoing Message: " + line);
                         // memberOuts[recipient].flush(); // ensure data is sent immediately
                     }
                     else{ // if none of the conditions are satisfied, an invalid message has been sent

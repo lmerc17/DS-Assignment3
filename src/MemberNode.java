@@ -66,8 +66,9 @@ public class MemberNode {
             int newProposalNumber; // defining variable to keep track of incoming new proposal numbers
             int currentProposalNumber = 0;
             int currentProposalMember = 0; // used to check who the current proposal's proposer is
-            int value; // defining the value to be proposed by the node provided this is a proposer node
-            int promiseCount = 1; // defining count for promise messages (starts as one as proposer always promises to itself)
+            int value = 0; // defining the value to be proposed by the node provided this is a proposer node
+            int promiseCount = 0; // defining count for promise messages
+            int acceptOKCount = 0; // defining count for acceptOK messages
 
 
             while((response = in.readLine()) != null){ // wait for messages and when one comes in
@@ -127,9 +128,9 @@ public class MemberNode {
 
                         break;
 
-                    // when a promiseNack message has been received (only received by proposers)
-                    case "promiseNack":
-
+                    // when a promiseNack or acceptReject message has been received (only received by proposers)
+                    case "promiseNack", "acceptReject":
+                        //ignore
                         break;
 
                     // when an accept message has been received (only received by acceptors)
@@ -152,17 +153,37 @@ public class MemberNode {
                         System.out.println("Message Sent: " + request);
                         out.println(request);
 
+                        // if this is a proposer, add one to acceptOK count (this simulates the proposer receiving its own message as an acceptor)
+                        if(isProposer){
+                            acceptOKCount++;
+                        }
+
                         break;
 
+                    // when an acceptOK message has been received (only received by proposers)
                     case "acceptOK":
+                        // set promise count to 0 as we have passed that phase of the algorithm
+                        promiseCount = 0;
+                        acceptOKCount++;
+
+                        // if a majority of acceptOKs have been received
+                        if(acceptOKCount > number_of_nodes/2) {
+                            // create a decide message with format <type of message>:<sender>:<recipient>:<proposal number>:<proposal value>
+                            request = "decide:N" + memberID + ":broadcast:" + proposalNumber + ":" + value;
+
+                            out.println(request); // send the accept message
+                            System.out.println("Message Sent: " + request);
+                            acceptOKCount = 0; // set acceptOK count to 0 to make sure this if statement is not entered again
+                        }
+
+                        previousProposalValue = value;
 
                         break;
 
-                    case "acceptReject":
-
-                        break;
-
+                    // when a decide message has been received (only received by acceptors)
                     case "decide":
+                        // a value has been decided
+                        previousProposalValue = Integer.parseInt(response.split(":")[4]);
 
                         break;
                 }

@@ -89,7 +89,6 @@ public class CentralCommunicationController {
                             if(i!=currentNode){
                                 memberOuts[i].println(line); // send data
                                 System.out.println("Outgoing Message to Node " + i + ": " + line);
-                                // memberOuts[i].flush(); // ensure data is sent immediately
                             }
                         }
                     }
@@ -97,7 +96,6 @@ public class CentralCommunicationController {
                         recipient = Integer.parseInt(messageRecipient.substring(1)) - 1;
                         memberOuts[recipient].println(line); // send the message to the node
                         System.out.println("Outgoing Message: " + line);
-                        // memberOuts[recipient].flush(); // ensure data is sent immediately
                     }
                     else{ // if none of the conditions are satisfied, an invalid message has been sent
                         System.err.println("Invalid message recipient received, message could not be passed on");

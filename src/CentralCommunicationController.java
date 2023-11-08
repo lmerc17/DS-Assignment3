@@ -18,7 +18,7 @@ public class CentralCommunicationController {
         try{
             for(int i=0; i<number_of_nodes; i++){
                 memberSockets[i] = serverSocket.accept();
-                memberOuts[i] = new PrintWriter(memberSockets[i].getOutputStream());
+                memberOuts[i] = new PrintWriter(memberSockets[i].getOutputStream(), true);
                 memberIns[i] = new BufferedReader(new InputStreamReader(memberSockets[i].getInputStream()));
             }
         } catch (IOException e) {
@@ -87,14 +87,14 @@ public class CentralCommunicationController {
                         for (int i = 0; i < number_of_nodes; i++){ // for all the nodes except the current one
                             if(i!=currentNode){
                                 memberOuts[i].println(line); // send data
-                                memberOuts[i].flush(); // ensure data is sent immediately
+                                // memberOuts[i].flush(); // ensure data is sent immediately
                             }
                         }
                     }
-                    else if(messageRecipient.contains("N")){ // if the ID is specific to a node
-                        recipient = Integer.parseInt(messageRecipient.substring(1)) - 1; // determine which node
+                    else if(messageRecipient.contains("N")){ // if the ID is specific to a node, determine which node
+                        recipient = Integer.parseInt(messageRecipient.substring(1)) - 1;
                         memberOuts[recipient].println(line); // send the message to the node
-                        memberOuts[recipient].flush(); // ensure data is sent immediately
+                        // memberOuts[recipient].flush(); // ensure data is sent immediately
                     }
                     else{ // if none of the conditions are satisfied, an invalid message has been sent
                         System.err.println("Invalid message recipient received, message could not be passed on");

@@ -189,6 +189,12 @@ public class MemberNode {
         catch(IOException e){ //Exception catching for IOException
             System.err.println("Couldn't get or lost connection to " + hostName);
         }
+        catch(NumberFormatException e){ // Exception catching for bad number format
+            System.err.println("A non-number string has been attempted to be converted into a number");
+        }
+        catch(ArrayIndexOutOfBoundsException e){ // Exception catching for out of bounds array accessing
+            System.err.println("Access at and out of bounds index for an array has been attempted");
+        }
 
     }
 

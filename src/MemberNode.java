@@ -68,6 +68,7 @@ public class MemberNode {
             int value = 0; // defining the value to be proposed by the node provided this is a proposer node
             int promiseCount = 1; // defining count for promise messages
             int acceptOKCount = 1; // defining count for acceptOK messages
+            int acceptRejectCount = 0;
 
 
             while((response = in.readLine()) != null){ // wait for messages and when one comes in
@@ -83,12 +84,13 @@ public class MemberNode {
                         recipient = Integer.parseInt(response.split(":")[1].substring(1));
                         newProposalNumber = Integer.parseInt(response.split(":")[3]);
 
-                        // if the new proposal number is greater than the old proposal number,
+                        // if there has been no proposal proposed by someone already and new proposal number is greater than the old proposal number,
                         // send back a promise message and update proposal number
-                        if(newProposalNumber > currentProposalNumber){
+                        if(currentProposalMember == 0 && newProposalNumber > currentProposalNumber){
                             // promise is of format <type of message>:<sender>:<recipient>:<previous proposal number>:<previous proposal value>
                             request = "promise:N" + memberID + ":N" + recipient + ":" + previousProposalNumber + ":" + previousProposalValue;
                             currentProposalNumber = newProposalNumber; // update proposal number
+                            currentProposalMember = recipient; // update proposal member
                         }
                         else{
                             request = "promiseNack:N" + memberID + ":N" + recipient; // form promiseNack if not promising
@@ -121,8 +123,8 @@ public class MemberNode {
 
                         break;
 
-                    // when a promiseNack or acceptReject message has been received (only received by proposers)
-                    case "promiseNack", "acceptReject":
+                    // when a promiseNack has been received (only received by proposers)
+                    case "promiseNack":
                         //ignore
                         break;
 
@@ -173,10 +175,26 @@ public class MemberNode {
 
                         break;
 
+                    // when an acceptReject message has been received (only received by proposers)
+                    case "acceptReject":
+                        acceptRejectCount++;
+
+                        // if a majority of acceptOKs have been received, try sending a proposal again
+                        if(acceptRejectCount > number_of_nodes/2){
+                            proposalNumber++;
+                            request = "proposal:N" + memberID + ":broadcast:" + proposalNumber; // create the proposal request
+                            out.println(request); // send the proposal request
+                            System.out.println("Message Sent: " + request);
+                            acceptOKCount = 0; // set to 0 to ensure it is not entered again
+                        }
+
+                        break;
+
                     // when a decide message has been received (only received by acceptors)
                     case "decide":
                         // a value has been decided
                         previousProposalValue = Integer.parseInt(response.split(":")[4]);
+                        currentProposalMember = 0; // set to 0 so a new proposer can propose (but the value will not change)
 
                         break;
                 }

@@ -156,11 +156,6 @@ public class MemberNode {
                         System.out.println("Message Sent: " + request);
                         out.println(request);
 
-                        // if this is a proposer, add one to acceptOK count (this simulates the proposer receiving its own message as an acceptor)
-                        if(isProposer){
-                            acceptOKCount++;
-                        }
-
                         break;
 
                     // when an acceptOK message has been received (only received by proposers)
@@ -179,6 +174,8 @@ public class MemberNode {
                             acceptOKCount = 0; // set acceptOK count to 0 to make sure this if statement is not entered again
                         }
 
+                        // the previous proposal value is set here as the proposer will not receive a
+                        // decide message and will not get a chance later to set it
                         previousProposalValue = value;
 
                         break;
@@ -187,7 +184,7 @@ public class MemberNode {
                     case "acceptReject", "promiseNack":
                         acceptRejectCount++;
 
-                        // if a majority of acceptRejects or promiseNacks have been received, try sending a proposal again
+                        // if a majority of acceptReject or promiseNack messages have been received, try sending a proposal again
                         if(acceptRejectCount > number_of_nodes/2){
                             proposalNumber++;
                             request = "proposal:N" + memberID + ":broadcast:" + proposalNumber; // create the proposal request

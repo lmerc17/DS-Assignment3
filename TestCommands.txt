@@ -1,9 +1,9 @@
 All scripts must be run in the src directory and in separate terminals
 
 To run the 1ProposerInstantMessages Test
-    ./test_scripts/0RunServer.sh test_outputs/1_server_out.txt
-    ./test_scripts/1ProposerInstantMessages.sh
+    ./test_scripts/0_RunServer.sh test_outputs/1_server_out.txt
+    ./test_scripts/1_1ProposerInstantMessages.sh
 
 To run the 2ProposersInstantMessages Test
-    ./test_scripts/0RunServer.sh test_outputs/2_server_out.txt
-    ./test_scripts/2ProposersInstantMessages.sh
+    ./test_scripts/0_RunServer.sh test_outputs/2_server_out.txt
+    ./test_scripts/2_2ProposersInstantMessages.sh

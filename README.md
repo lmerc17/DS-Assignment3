@@ -50,4 +50,17 @@ The CCC is consistently checking for errors. In the initialise sockets and close
 In the main method, there are 3 main errors being accounted for. IO Exceptions, Number Format Exceptions and Array Index Out Of Bounds Exceptions. In the event of each of these, the code will output an error message before stopping.
 
 ## Testing
+### Requirements of Implementation
+
+- [x] Implementation of Paxos works when two councillors send voting proposals at the same time
+  - Done in test 2
+- [x] Implementation of Paxos works in case where all members have immediate responses
+  - Done in tests 1 and 2
+- [ ] Implementation works when members respond based on their individual profiles
+  - M1 sends/receives messages instantly all the time
+  - M2 sends/receives messages after a long delay, or they propose and then go offline
+  - M3 sends/receives messages after a short delay, unless camping, in which case he does not send/receive them at all
+  - M4-M9: sends/receives messages immediately, after a short delay, or after a long delay.
+
+### Smaller Unit Tests for functionality and error checking
 

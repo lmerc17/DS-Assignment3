@@ -38,7 +38,8 @@ public class MemberNode {
             return;
         }
 
-        System.out.println("Node " + memberID);
+        // Label at top of terminal to know which member's output is being shown.
+        System.out.println("Member " + memberID);
 
         // try and catch statement used to connect to and communicate with the centralised communication controller
         try (Socket serverSocket = new Socket(hostName, portNumber);
@@ -51,13 +52,14 @@ public class MemberNode {
             int proposalNumber = 1; // defining variable to keep track of proposal numbers
             int currentProposalNumber = 0;
             int currentProposalMember = 0; // used to check who the current proposal's proposer is
+            int number_of_nodes = 9;
 
             if(isProposer){ // if this node is the proposer, send a proposal request to the central communication controller
                 // proposal request is in the format of <type of message>:<sender>:<recipient>:<current proposal number>
 
                 if(memberID == 1) { // this is for a test
                     try {
-                        TimeUnit.SECONDS.sleep(2);
+                        TimeUnit.SECONDS.sleep(number_of_nodes+1);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
@@ -73,7 +75,6 @@ public class MemberNode {
             // initialisation of variables used when reading or sending messages
             String response;
             String messageType;
-            int number_of_nodes = 3;
             int recipient;
             int previousProposalNumber = 0;
             int previousProposalValue = 0;
@@ -181,7 +182,7 @@ public class MemberNode {
                         break;
 
                     // when an acceptReject or promiseNack message has been received (only received by proposers)
-                    case "acceptReject", "promiseNack":
+                    case "acceptReject":
                         acceptRejectCount++;
 
                         // if a majority of acceptReject or promiseNack messages have been received, try sending a proposal again
@@ -194,6 +195,9 @@ public class MemberNode {
                             currentProposalMember = memberID;
                             currentProposalNumber = proposalNumber;
                         }
+
+                        break;
+                    case "promiseNack":
 
                         break;
 

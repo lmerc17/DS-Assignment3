@@ -58,7 +58,7 @@ public class CentralCommunicationController {
 
         // initialise port number for server and number of nodes to connect
         int port = 4567;
-        int number_of_nodes = 3;
+        int number_of_nodes = 9;
 
         // try and catch statement to ensure sockets act accordingly
         try{

@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# running 9 nodes at one time
-# there is a delay between them so they connect to the CCC in the right order
+# The 9 nodes are run with the first and second being proposers sending their messages instantly
 start powershell java MemberNode 1 true
 sleep .5
 start powershell java MemberNode 2 true

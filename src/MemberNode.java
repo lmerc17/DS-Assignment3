@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class MemberNode {
 
@@ -57,13 +56,6 @@ public class MemberNode {
             if(isProposer){ // if this node is the proposer, send a proposal request to the central communication controller
                 // proposal request is in the format of <type of message>:<sender>:<recipient>:<current proposal number>
 
-                if(memberID == 1) { // this is for a test
-                    try {
-                        TimeUnit.SECONDS.sleep(number_of_nodes+1);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
                 request = "proposal:N" + memberID + ":broadcast:" + proposalNumber; // create the proposal request
                 out.println(request); // send the proposal request
                 System.out.println("Message Sent: " + request);

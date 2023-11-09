@@ -85,7 +85,7 @@ public class CentralCommunicationController {
                 try{
                     line = memberIns[currentNode].readLine(); // try reading the line, if it times out go to catch statement
 
-                    System.out.println("Message Received: " + line);
+                    System.out.println("\nMessage Received: " + line);
 
                     messageRecipient = line.split(":")[2]; // save the ID for the message recipient
                     if (messageRecipient.equals("broadcast")) { // if the ID is broadcast

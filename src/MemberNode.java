@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
 public class MemberNode {
 
@@ -36,6 +37,7 @@ public class MemberNode {
             return;
         }
 
+        System.out.println("Node " + memberID);
 
         // try and catch statement used to connect to and communicate with the centralised communication controller
         try (Socket serverSocket = new Socket(hostName, portNumber);
@@ -46,13 +48,25 @@ public class MemberNode {
             // initialisation of String request which stores the request message to be sent
             String request; // requests can be in different formats depending on the message being sent
             int proposalNumber = 1; // defining variable to keep track of proposal numbers
+            int currentProposalNumber = 0;
+            int currentProposalMember = 0; // used to check who the current proposal's proposer is
 
             if(isProposer){ // if this node is the proposer, send a proposal request to the central communication controller
                 // proposal request is in the format of <type of message>:<sender>:<recipient>:<current proposal number>
 
+                if(memberID == 1) { // this is for a test
+                    try {
+                        TimeUnit.SECONDS.sleep(2);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 request = "proposal:N" + memberID + ":broadcast:" + proposalNumber; // create the proposal request
                 out.println(request); // send the proposal request
                 System.out.println("Message Sent: " + request);
+                currentProposalMember = memberID;
+                currentProposalNumber = proposalNumber;
+
             }
 
             // initialisation of variables used when reading or sending messages
@@ -63,8 +77,6 @@ public class MemberNode {
             int previousProposalNumber = 0;
             int previousProposalValue = 0;
             int newProposalNumber; // defining variable to keep track of incoming new proposal numbers
-            int currentProposalNumber = 0;
-            int currentProposalMember = 0; // used to check who the current proposal's proposer is
             int value = 0; // defining the value to be proposed by the node provided this is a proposer node
             int promiseCount = 1; // defining count for promise messages
             int acceptOKCount = 1; // defining count for acceptOK messages
@@ -124,9 +136,9 @@ public class MemberNode {
                         break;
 
                     // when a promiseNack has been received (only received by proposers)
-                    case "promiseNack":
-                        //ignore
-                        break;
+//                    case "promiseNack":
+//                        System.out.println("Ignoring PromiseNack");
+//                        break;
 
                     // when an accept message has been received (only received by acceptors)
                     case "accept":
@@ -176,7 +188,7 @@ public class MemberNode {
                         break;
 
                     // when an acceptReject message has been received (only received by proposers)
-                    case "acceptReject":
+                    case "acceptReject", "promiseNack":
                         acceptRejectCount++;
 
                         // if a majority of acceptOKs have been received, try sending a proposal again
@@ -185,7 +197,9 @@ public class MemberNode {
                             request = "proposal:N" + memberID + ":broadcast:" + proposalNumber; // create the proposal request
                             out.println(request); // send the proposal request
                             System.out.println("Message Sent: " + request);
-                            acceptOKCount = 0; // set to 0 to ensure it is not entered again
+                            acceptRejectCount = 0; // set to 0 to ensure it is not entered again
+                            currentProposalMember = memberID;
+                            currentProposalNumber = proposalNumber;
                         }
 
                         break;

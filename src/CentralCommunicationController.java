@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class CentralCommunicationController {
     /** Method to initialise sockets upon Central Communication Controller startup
@@ -18,6 +19,7 @@ public class CentralCommunicationController {
         try{
             for(int i=0; i<number_of_nodes; i++){
                 memberSockets[i] = serverSocket.accept();
+                memberSockets[i].setSoTimeout(250);
                 memberOuts[i] = new PrintWriter(memberSockets[i].getOutputStream(), true);
                 memberIns[i] = new BufferedReader(new InputStreamReader(memberSockets[i].getInputStream()));
             }
@@ -74,13 +76,15 @@ public class CentralCommunicationController {
             // initialisation of used variables for sending messages
             String line;
             String messageRecipient;
-            String messageType;
             int currentNode = 0;
             int recipient;
+            int socketTimeoutCount = 0;
 
             // infinite while loop, it will cycle through the nodes checking if a message has been received from them
             while(true){
-                if((line = memberIns[currentNode].readLine()) != null) { // if a message has been received for the current node
+                try{
+                    line = memberIns[currentNode].readLine(); // try reading the line, if it times out go to catch statement
+
                     System.out.println("Message Received: " + line);
 
                     messageRecipient = line.split(":")[2]; // save the ID for the message recipient
@@ -102,13 +106,17 @@ public class CentralCommunicationController {
                         return;
                     }
 
-                    messageType = line.split(":")[0]; // once all messages have been sent, determine the type of message sent off
-                    if(messageType.equals("decide")){ // if a decide message has been broadcast out, the vote has been settled, therefore no further communication required
-                        break;
-                    }
+                    socketTimeoutCount = 0;
 
                 }
-                currentNode = (currentNode + 1) % number_of_nodes; // to ensure currentNode does not surpass number of connected nodes
+                catch(SocketTimeoutException e){ // no message received on currentNode for 1 second, move to next one
+                    if(socketTimeoutCount == 20){
+                        break;
+                    }
+                    currentNode = (currentNode + 1) % number_of_nodes; // to ensure currentNode does not surpass number of connected nodes
+                    socketTimeoutCount++;
+                }
+
             }
 
             // function to close all sockets once finished using them

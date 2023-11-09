@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class MemberNode {
@@ -135,11 +136,6 @@ public class MemberNode {
 
                         break;
 
-                    // when a promiseNack has been received (only received by proposers)
-//                    case "promiseNack":
-//                        System.out.println("Ignoring PromiseNack");
-//                        break;
-
                     // when an accept message has been received (only received by acceptors)
                     case "accept":
 
@@ -187,11 +183,11 @@ public class MemberNode {
 
                         break;
 
-                    // when an acceptReject message has been received (only received by proposers)
+                    // when an acceptReject or promiseNack message has been received (only received by proposers)
                     case "acceptReject", "promiseNack":
                         acceptRejectCount++;
 
-                        // if a majority of acceptOKs have been received, try sending a proposal again
+                        // if a majority of acceptRejects or promiseNacks have been received, try sending a proposal again
                         if(acceptRejectCount > number_of_nodes/2){
                             proposalNumber++;
                             request = "proposal:N" + memberID + ":broadcast:" + proposalNumber; // create the proposal request
@@ -227,6 +223,12 @@ public class MemberNode {
         catch(ArrayIndexOutOfBoundsException e){ // Exception catching for out of bounds array accessing
             System.err.println("Access at and out of bounds index for an array has been attempted");
         }
+
+        // Due to each client being opened in a new terminal window, it would close when the process did
+        // The next three lines are included so the terminal window stays open until the user presses enter
+        System.out.println("Press Enter to Exit");
+        Scanner scan = new Scanner(System.in);
+        scan.nextLine();
 
     }
 

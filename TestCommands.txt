@@ -1,9 +1,21 @@
-All scripts must be run in the src directory and in separate terminals
+All scripts must be run in order, in the src directory and in separate terminals
 
-To run the 1ProposerInstantMessages Test
+To run the 1_1ProposerInstantMessages Test
     ./test_scripts/0_RunServer.sh test_outputs/1_server_out.txt
     ./test_scripts/1_1ProposerInstantMessages.sh
 
-To run the 2ProposersInstantMessages Test
+To run the 2_2ProposersInstantMessages Test
     ./test_scripts/0_RunServer.sh test_outputs/2_server_out.txt
     ./test_scripts/2_2ProposersInstantMessages.sh
+
+To run the 3_1ProposerVariedMessages Test
+    ./test_scripts/0_RunServer.sh test_outputs/3_server_out.txt
+    ./test_scripts/3_1ProposerVariedMessages.sh
+
+To run the 4_2ProposersVariedMessages Test
+    ./test_scripts/0_RunServer.sh test_outputs/4_server_out.txt
+    ./test_scripts/4_2ProposersVariedMessages.sh
+
+To run the 5_2Proposer1OfflineVariedMessages Test
+    ./test_scripts/0_RunServer.sh test_outputs/5_server_out.txt
+    ./test_scripts/5_2Proposers1OfflineVariedMessages.sh

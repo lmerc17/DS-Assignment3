@@ -1,0 +1,112 @@
+
+Message Received: proposal:N1:broadcast:1
+Outgoing Message to Node 1: proposal:N1:broadcast:1
+Outgoing Message to Node 2: proposal:N1:broadcast:1
+Outgoing Message to Node 3: proposal:N1:broadcast:1
+Outgoing Message to Node 4: proposal:N1:broadcast:1
+Outgoing Message to Node 5: proposal:N1:broadcast:1
+Outgoing Message to Node 6: proposal:N1:broadcast:1
+Outgoing Message to Node 7: proposal:N1:broadcast:1
+Outgoing Message to Node 8: proposal:N1:broadcast:1
+
+Message Received: proposal:N2:broadcast:1
+Outgoing Message to Node 0: proposal:N2:broadcast:1
+Outgoing Message to Node 2: proposal:N2:broadcast:1
+Outgoing Message to Node 3: proposal:N2:broadcast:1
+Outgoing Message to Node 4: proposal:N2:broadcast:1
+Outgoing Message to Node 5: proposal:N2:broadcast:1
+Outgoing Message to Node 6: proposal:N2:broadcast:1
+Outgoing Message to Node 7: proposal:N2:broadcast:1
+Outgoing Message to Node 8: proposal:N2:broadcast:1
+
+Message Received: promiseNack:N2:N1
+Outgoing Message: promiseNack:N2:N1
+
+Message Received: promise:N3:N1:0:0
+Outgoing Message: promise:N3:N1:0:0
+
+Message Received: promiseNack:N3:N2
+Outgoing Message: promiseNack:N3:N2
+
+Message Received: promise:N4:N1:0:0
+Outgoing Message: promise:N4:N1:0:0
+
+Message Received: promiseNack:N4:N2
+Outgoing Message: promiseNack:N4:N2
+
+Message Received: promise:N5:N1:0:0
+Outgoing Message: promise:N5:N1:0:0
+
+Message Received: promiseNack:N5:N2
+Outgoing Message: promiseNack:N5:N2
+
+Message Received: promiseNack:N1:N2
+Outgoing Message: promiseNack:N1:N2
+
+Message Received: promise:N6:N1:0:0
+Outgoing Message: promise:N6:N1:0:0
+
+Message Received: promise:N7:N1:0:0
+Outgoing Message: promise:N7:N1:0:0
+
+Message Received: accept:N1:broadcast:1:1
+Outgoing Message to Node 1: accept:N1:broadcast:1:1
+Outgoing Message to Node 2: accept:N1:broadcast:1:1
+Outgoing Message to Node 3: accept:N1:broadcast:1:1
+Outgoing Message to Node 4: accept:N1:broadcast:1:1
+Outgoing Message to Node 5: accept:N1:broadcast:1:1
+Outgoing Message to Node 6: accept:N1:broadcast:1:1
+Outgoing Message to Node 7: accept:N1:broadcast:1:1
+Outgoing Message to Node 8: accept:N1:broadcast:1:1
+
+Message Received: acceptOK:N2:N1
+Outgoing Message: acceptOK:N2:N1
+
+Message Received: acceptOK:N3:N1
+Outgoing Message: acceptOK:N3:N1
+
+Message Received: acceptOK:N4:N1
+Outgoing Message: acceptOK:N4:N1
+
+Message Received: acceptOK:N5:N1
+Outgoing Message: acceptOK:N5:N1
+
+Message Received: promiseNack:N6:N2
+Outgoing Message: promiseNack:N6:N2
+
+Message Received: promiseNack:N7:N2
+Outgoing Message: promiseNack:N7:N2
+
+Message Received: decide:N1:broadcast:1:1
+Outgoing Message to Node 1: decide:N1:broadcast:1:1
+Outgoing Message to Node 2: decide:N1:broadcast:1:1
+Outgoing Message to Node 3: decide:N1:broadcast:1:1
+Outgoing Message to Node 4: decide:N1:broadcast:1:1
+Outgoing Message to Node 5: decide:N1:broadcast:1:1
+Outgoing Message to Node 6: decide:N1:broadcast:1:1
+Outgoing Message to Node 7: decide:N1:broadcast:1:1
+Outgoing Message to Node 8: decide:N1:broadcast:1:1
+
+Message Received: acceptOK:N6:N1
+Outgoing Message: acceptOK:N6:N1
+
+Message Received: acceptOK:N7:N1
+Outgoing Message: acceptOK:N7:N1
+
+Message Received: promise:N8:N1:0:0
+Outgoing Message: promise:N8:N1:0:0
+
+Message Received: promise:N9:N1:0:0
+Outgoing Message: promise:N9:N1:0:0
+
+Message Received: promiseNack:N8:N2
+Outgoing Message: promiseNack:N8:N2
+
+Message Received: promiseNack:N9:N2
+Outgoing Message: promiseNack:N9:N2
+
+Message Received: acceptOK:N8:N1
+Outgoing Message: acceptOK:N8:N1
+
+Message Received: acceptOK:N9:N1
+Outgoing Message: acceptOK:N9:N1

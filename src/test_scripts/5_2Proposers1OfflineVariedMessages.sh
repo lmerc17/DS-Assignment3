@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# The 9 nodes are run with the first and second being proposers sending their messages instantly
+# The 9 nodes are run with the first sending their messages instantly, the second being offline and the rest having varying response times
 start powershell "java MemberNode 1 true 0 > test_outputs/5_proposer1_out.txt"
 sleep .5
 start powershell "java MemberNode 2 true 20 > test_outputs/5_proposer2_offline_out.txt"

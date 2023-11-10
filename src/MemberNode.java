@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class MemberNode {
 
@@ -14,10 +15,11 @@ public class MemberNode {
         int portNumber = 4567; // defining port number of centralised communication controller
         boolean isProposer = false; // defining boolean to determine if this node is a proposer or not
         int memberID; // initialising the integer that will store the ID of this node
+        int responseTime; // initialising the integer that will determine the response time of the node
 
         // checking correct number of arguments have been given
-        if(args.length != 2){
-            System.err.println("Usage: java MemberNode <memberID> <proposer status>");
+        if(args.length != 3){
+            System.err.println("Usage: java MemberNode <memberID> <proposer status> <response time>");
             return;
         }
         // if statement to check whether this node is the proposer or not
@@ -34,6 +36,14 @@ public class MemberNode {
         }
         catch(NumberFormatException e){
             System.err.println("Please enter valid memberID");
+            return;
+        }
+        // try and catch to get responseTime
+        try {
+            responseTime = Integer.parseInt(args[2]);
+        }
+        catch(NumberFormatException e){
+            System.err.println("Please enter valid response time");
             return;
         }
 
@@ -81,6 +91,14 @@ public class MemberNode {
                 System.out.println("Message Received: " + response);
                 messageType = response.split(":")[0]; // determine the type of message
 
+                if(responseTime >= 20){ // if the response time is greater than or equal to 20, wait indefinitely
+                    try {
+                        TimeUnit.SECONDS.sleep(100);
+                    } catch (InterruptedException e) {
+                        System.err.println("Could not sleep for " + responseTime + " seconds");
+                    }
+                }
+
                 switch(messageType){
 
                     // when a prepare message has been received (only received by acceptors)
@@ -101,6 +119,13 @@ public class MemberNode {
                         else{
                             request = "promiseNack:N" + memberID + ":N" + recipient; // form promiseNack if not promising
                         }
+
+                        try{ // respond to the proposal message only after the response time has occurred
+                            TimeUnit.SECONDS.sleep(responseTime);
+                        } catch (InterruptedException e) {
+                            System.err.println("Could not sleep for " + responseTime + " seconds");
+                        }
+
                         out.println(request); // send the promise message
                         System.out.println("Message Sent: " + request);
 
@@ -122,11 +147,21 @@ public class MemberNode {
                             // create an accept message with format <type of message>:<sender>:<recipient>:<proposal number>:<proposal value>
                             request = "accept:N" + memberID + ":broadcast:" + proposalNumber + ":" + value;
 
+                            try{ // respond to the promise messages only after the response time has occurred
+                                TimeUnit.SECONDS.sleep(responseTime);
+                            } catch (InterruptedException e) {
+                                System.err.println("Could not sleep for " + responseTime + " seconds");
+                            }
+
                             out.println(request); // send the accept message
                             System.out.println("Message Sent: " + request);
                             promiseCount = 0; // set promise count to 0 to make sure this if statement is not entered again
                         }
 
+                        break;
+
+                    // when a promiseNack message has been received, ignore it (only received by proposers)
+                    case "promiseNack":
                         break;
 
                     // when an accept message has been received (only received by acceptors)
@@ -146,6 +181,12 @@ public class MemberNode {
                             request = "acceptReject:N" + memberID + ":N" + recipient; // form acceptReject if not promising
                         }
 
+                        try{ // respond to the accept message only after the response time has occurred
+                            TimeUnit.SECONDS.sleep(responseTime);
+                        } catch (InterruptedException e) {
+                            System.err.println("Could not sleep for " + responseTime + " seconds");
+                        }
+
                         System.out.println("Message Sent: " + request);
                         out.println(request);
 
@@ -161,6 +202,12 @@ public class MemberNode {
                         if(acceptOKCount > number_of_nodes/2) {
                             // create a decide message with format <type of message>:<sender>:<recipient>:<proposal number>:<proposal value>
                             request = "decide:N" + memberID + ":broadcast:" + proposalNumber + ":" + value;
+
+                            try{ // respond to the acceptOK messages only after the response time has occurred
+                                TimeUnit.SECONDS.sleep(responseTime);
+                            } catch (InterruptedException e) {
+                                System.err.println("Could not sleep for " + responseTime + " seconds");
+                            }
 
                             out.println(request); // send the accept message
                             System.out.println("Message Sent: " + request);
@@ -181,15 +228,19 @@ public class MemberNode {
                         if(acceptRejectCount > number_of_nodes/2){
                             proposalNumber++;
                             request = "proposal:N" + memberID + ":broadcast:" + proposalNumber; // create the proposal request
+
+                            try{ // respond to the acceptReject messages only after the response time has occurred
+                                TimeUnit.SECONDS.sleep(responseTime);
+                            } catch (InterruptedException e) {
+                                System.err.println("Could not sleep for " + responseTime + " seconds");
+                            }
+
                             out.println(request); // send the proposal request
                             System.out.println("Message Sent: " + request);
                             acceptRejectCount = 0; // set to 0 to ensure it is not entered again
                             currentProposalMember = memberID;
                             currentProposalNumber = proposalNumber;
                         }
-
-                        break;
-                    case "promiseNack":
 
                         break;
 
@@ -217,9 +268,8 @@ public class MemberNode {
             System.err.println("Access at and out of bounds index for an array has been attempted");
         }
 
-        // Due to each client being opened in a new terminal window, it would close when the process did
-        // The next three lines are included so the terminal window stays open until the user presses enter
-        System.out.println("Press Enter to Exit");
+        // Due to each client being opened in a new terminal window, it would close when the process ends
+        // The next two lines are included so the terminal window stays open until the user presses enter
         Scanner scan = new Scanner(System.in);
         scan.nextLine();
 

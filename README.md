@@ -7,11 +7,12 @@ The CCC and MemberNodes can all be compiled using a Makefile. When in the same d
 ## Running the Centralised Communication Controller and Member Nodes
 When in the src directory, the CCC and MemberNodes can be run manually with the following commands:
 - CentralCommunicationController: "java CentralCommunicationController".
-- MemberNode: "java MemberNode [member ID] [proposer_status]".
+- MemberNode: "java MemberNode [member ID] [proposer_status] [response time]".
 
 The definitions of the arguments are as follows:
 - member ID: The ID number of the memberNode.
 - proposer status: "true" or "false" should be entered here, this tells the code whether this node is a proposer or not.
+- response time: the amount of time it takes the node to respond to a message, this is mainly for testing purposes. 0 is entered for immediate responses and 20 or above is entered for no response at all.
 
 ## How Each Components Acts
 ### MemberNode
@@ -33,7 +34,7 @@ The initialise sockets method takes in a ServerSocket, an array of Sockets, an a
 
 The close sockets method takes in the same arguments as the initialise sockets method and runs through a for loop iterating through each of the sockets, PrintWriters and BufferedReaders and closes each of them. If it runs into issues it returns 1, otherwise it returns 0.
 
-The main method for the CCC initialises all the required sockets, PrintWriters and BufferedReaders. It then enters an infinite while loop where it loops through each node checking if a message has been received on it. The SoTimeout for each socket was set to 250 so that if reading that node, after 0.25 seconds it will move onto the next node. This was done so readLine() was not a blocking reader anymore. When a line is received, the CCC checks who the recipient of the message is and sends it out accordingly. If it's "broadcast" it sends the message to all nodes but the one who sent it. If it is "Nn" where n is some node number, it sends the message to that node specifically. If the CCC has cycled through the nodes and not received a message for 5 seconds, it will assume convergence, break the while loop, close the sockets and end.
+The main method for the CCC initialises all the required sockets, PrintWriters and BufferedReaders. It then enters an infinite while loop where it loops through each node checking if a message has been received on it. The SoTimeout for each socket was set to 250 so that if reading that node, after 0.25 seconds it will move onto the next node. This was done so readLine() was not a blocking reader anymore. When a line is received, the CCC checks who the recipient of the message is and sends it out accordingly. If it's "broadcast" it sends the message to all nodes but the one who sent it. If it is "Nn" where n is some node number, it sends the message to that node specifically. If the CCC has cycled through the nodes and not received a message for 20 seconds, it will assume convergence, break the while loop, close the sockets and end.
 
 It's also important to mention that the CCC will only work provided each memberNode connects to it in the right order. For example, node 1 must connect first, node 2 must connect second etc.
 
@@ -51,6 +52,10 @@ In the main method, there are 3 main errors being accounted for. IO Exceptions, 
 
 ## Testing
 ### Requirements of Implementation
+
+The tests for the requirements of implementation are done using bash scripts to run the memberNodes and the CCC. Each file begins with a number corresponding to the test it belongs to. Any outputs produced by the bash scripts also contain a corresponding test number. To see the commands needed to run each test, please see the TestCommands.txt file. 
+
+- Mention how the tests make use of windows commands "start powershell", meaning they may not be compatible with all devices.
 
 - [x] Implementation of Paxos works when two councillors send voting proposals at the same time
   - Done in test 2

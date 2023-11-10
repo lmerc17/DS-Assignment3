@@ -109,8 +109,8 @@ public class CentralCommunicationController {
                     socketTimeoutCount = 0;
 
                 }
-                catch(SocketTimeoutException e){ // no message received on currentNode for 1 second, move to next one
-                    if(socketTimeoutCount == 20){
+                catch(SocketTimeoutException e){ // no message received on currentNode for 0.25 seconds, move to next one
+                    if(socketTimeoutCount == 80){ // if 20 seconds of no messages has passed, close server
                         break;
                     }
                     currentNode = (currentNode + 1) % number_of_nodes; // to ensure currentNode does not surpass number of connected nodes
